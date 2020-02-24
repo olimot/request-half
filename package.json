@@ -1,6 +1,6 @@
 {
   "name": "request-half",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "Seungmin Kim",
   "repository": "http://github.com/olimot/request-half",
   "description": "functional-friendly, fetch-like nodejs native request",
