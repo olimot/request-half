@@ -1,7 +1,11 @@
 {
   "name": "request-half",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "lib/request.js",
+  "types": "./lib/request.d.ts",
+  "author": "Seungmin Kim",
+  "repository": "http://github.com/olimot/request-half",
+  "description": "functional-friendly, fetch-like nodejs native request",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
