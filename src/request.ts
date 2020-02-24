@@ -3,21 +3,21 @@ import https from 'https';
 import stream from 'stream';
 import zlib from 'zlib';
 
-export function request(url: string | URL, options?: http.RequestOptions): Promise<IncomingMessage>;
-export function request(options: http.RequestOptions): Promise<IncomingMessage>;
-export function request(
-  url: http.RequestOptions | string | URL,
-  options?: http.RequestOptions,
-): Promise<IncomingMessage> {
+type RequestOptions = http.RequestOptions & { body?: string };
+
+export function request(url: string | URL, options?: RequestOptions): Promise<IncomingMessage>;
+export function request(options: RequestOptions): Promise<IncomingMessage>;
+export function request(url: RequestOptions | string | URL, options?: RequestOptions): Promise<IncomingMessage> {
   return new Promise<IncomingMessage>((resolve, reject) => {
-    const requestfn =
-      (options && (options.port === 443 || options.protocol === 'https')) ||
-      (typeof url === 'string' ? url.startsWith('https') : url.port === 443 || url.protocol === 'https:')
-        ? https.request
-        : http.request;
+    const isHttps =
+      typeof url === 'string'
+        ? url.startsWith('https')
+        : url && (url.port === 443 || url.port === '443' || url.protocol === 'https:');
+    const requestfn = isHttps ? https.request : http.request;
     const request = options ? requestfn(<string | URL>url, options, resolve) : requestfn(url, resolve);
     request.on('error', reject);
-    request.end();
+    if (options && options.body) request.write(options.body, () => request.end());
+    else request.end();
   });
 }
 
