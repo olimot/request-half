@@ -3,7 +3,7 @@ import https from 'https';
 import stream from 'stream';
 import zlib from 'zlib';
 
-type RequestOptions = http.RequestOptions & { body?: string };
+type RequestOptions = http.RequestOptions & { body?: string | Buffer | stream.Readable };
 
 export function request(url: string | URL, options?: RequestOptions): Promise<IncomingMessage>;
 export function request(options: RequestOptions): Promise<IncomingMessage>;
@@ -16,8 +16,16 @@ export function request(url: RequestOptions | string | URL, options?: RequestOpt
     const requestfn = isHttps ? https.request : http.request;
     const request = options ? requestfn(<string | URL>url, options, resolve) : requestfn(url, resolve);
     request.on('error', reject);
-    if (options && options.body) request.write(options.body, () => request.end());
-    else request.end();
+    if (options && options.body) {
+      if (typeof options.body === 'string' || options.body instanceof Buffer) {
+        request.write(options.body, () => request.end());
+        request.end();
+      } else {
+        options.body.pipe(request);
+      }
+    } else {
+      request.end();
+    }
   });
 }
 

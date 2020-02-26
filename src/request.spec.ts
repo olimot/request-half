@@ -3,6 +3,7 @@ import { request, parse } from './request';
 import http from 'http';
 import { AddressInfo } from 'net';
 import zlib from 'zlib';
+import { Stream, Readable } from 'stream';
 
 describe('request', function() {
   let server: http.Server, url: string;
@@ -44,5 +45,19 @@ describe('request', function() {
       headers: { 'accept-encoding': 'gzip, deflate' },
     }).then(parse());
     assert(typeof text === 'string');
+  });
+
+  it('should take a readable stream body', async function() {
+    const object: any = await request(url, { method: 'POST', body: Readable.from(['{ "test": "ok" }']) }).then(
+      parse('json'),
+    );
+    assert(object !== null && typeof object === 'object' && object.test === 'ok');
+  });
+
+  it('should take a buffer body', async function() {
+    const object: any = await request(url, { method: 'POST', body: Buffer.from('{ "test": "ok" }', 'utf-8') }).then(
+      parse('json'),
+    );
+    assert(object !== null && typeof object === 'object' && object.test === 'ok');
   });
 });
