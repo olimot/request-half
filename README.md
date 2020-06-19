@@ -1,6 +1,6 @@
 # request-half
 
-### _functional-friendly, fetch-like, node-native_
+### _asynchronous, functional-friendly, node-native_
 
 request-half provides two functions: `request()` and `parse()`.
 
@@ -9,6 +9,7 @@ request-half provides two functions: `request()` and `parse()`.
 - `request()` parameters are similar to `http.request()` and `fetch()`  
   **(If you are sending JSON body, you should set header content-type: application/json)**
 - `request()` uses `https.request()` if url starts with 'https'
+- **Unlike `fetch()`,** `request()` returns `IncomingMessage` which is original http.request() returns.
 - `parse()` parses gzip automatically if 'content-encoding' header is 'gzip' or 'deflate'.
 - `parse()` is curried. you can use this function like `.then(parse('json'))`
 - `parse()` can parse 'json'|'utf8'|'ucs2'|'utf-8'|'ascii'|'ucs-2'|'utf16le'|'utf-16le'|'latin1'|'binary'|'base64'|'hex'|'buffer';
