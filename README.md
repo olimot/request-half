@@ -27,6 +27,9 @@ export function parse(type: ResolveType, message: IncomingMessage): Promise<stri
 # Examples
 
 ```js
+const { request, parse } = require('request-half');
+// or import { request, parse } from 'request-half';
+
 const url = 'some url here';
 
 // parse as json from utf-8 text
