@@ -1,6 +1,6 @@
 # request-half
 
-## _functional-friendly, fetch-like, node-native_
+### _functional-friendly, fetch-like, node-native_
 
 request-half provides two functions: `request()` and `parse()`.
 
