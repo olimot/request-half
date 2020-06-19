@@ -8,6 +8,18 @@ request-half provides functional-friendly, fetch-like `request()` and `parse()` 
 - `parse()` parses gzip automatically if 'content-encoding' header is 'gzip' or 'deflate'.
 - `parse()` can parse 'utf8'| 'ucs2'| 'utf-8'| 'ascii'| 'ucs-2'| 'utf16le'| 'utf-16le'| 'latin1'| 'binary'| 'base64'| 'hex'| 'buffer'| 'json';
 
+## Installation
+
+```sh
+yarn add request-half
+```
+
+or if you use npm:
+
+```sh
+npm install -S request-half
+```
+
 ## Available functions
 
 ```ts
@@ -24,7 +36,7 @@ export function parse(type: 'buffer', message: IncomingMessage): Promise<Buffer>
 export function parse(type: ResolveType, message: IncomingMessage): Promise<string>;
 ```
 
-# Examples
+## Examples
 
 ```js
 const { request, parse } = require('request-half');
