@@ -36,3 +36,22 @@ async function inSomeAsyncFunction() {
   const text3 = await parse(response);
 }
 ```
+
+# Request examples
+
+```js
+// POST Message
+const result1 = await request('http://example.com/article', {
+  method: 'POST',
+  headers: { 'Content-type': 'application/json' },
+  body: JSON.stringify({ title: 'Hello, world', body: 'Use half to request, then else half to parse.' }),
+}).then(parse('json'));
+
+// GET Message
+const querystring = require('querystring');
+const url = `http://example.com/article?${querystring.stringify({ title: 'Hello', orderBy: 'date' })}`;
+const result2 = await request(url).then(parse('json'));
+
+// HTTPS is also OK.
+const result3 = await request('https://example.com/article/1').then(parse('json'));
+```
