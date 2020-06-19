@@ -1,20 +1,27 @@
 # request-half
 
-request-half provides functional-friendly, fetch-like `request()` and `parse()` which use nodejs native
-`https.request()`, `http.request()` and `http.IncomingMessage`.
+## _functional-friendly, fetch-like, node-native_
 
-- `request()` parameters are similar to `http.request()` and `fetch()` **(If you are sending JSON body, you should set content-type: application/json)**
+request-half provides two functions: `request()` and `parse()`.
+
+- **It is a node module. Browser environment is not supported.**
+- It uses node internal modules: `http`, `https`, `stream`, `zlib`
+- `request()` parameters are similar to `http.request()` and `fetch()`  
+  **(If you are sending JSON body, you should set header content-type: application/json)**
 - `request()` uses `https.request()` if url starts with 'https'
 - `parse()` parses gzip automatically if 'content-encoding' header is 'gzip' or 'deflate'.
+- `parse()` is curried. you can use this function like `.then(parse('json'))`
 - `parse()` can parse 'utf8'| 'ucs2'| 'utf-8'| 'ascii'| 'ucs-2'| 'utf16le'| 'utf-16le'| 'latin1'| 'binary'| 'base64'| 'hex'| 'buffer'| 'json';
 
 ## Installation
+
+### Yarn
 
 ```sh
 yarn add request-half
 ```
 
-or if you use npm:
+### NPM
 
 ```sh
 npm install -S request-half
