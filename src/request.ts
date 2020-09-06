@@ -29,20 +29,7 @@ export function request(url: RequestOptions | string | URL, options?: RequestOpt
   });
 }
 
-export type ResolveType =
-  | 'utf8'
-  | 'ucs2'
-  | 'utf-8'
-  | 'ascii'
-  | 'ucs-2'
-  | 'utf16le'
-  | 'utf-16le'
-  | 'latin1'
-  | 'binary'
-  | 'base64'
-  | 'hex'
-  | 'buffer'
-  | 'json';
+export type ResolveType = Parameters<Buffer['toString']>[0] | 'buffer' | 'json';
 
 type ParseMessageCurried = (message: IncomingMessage) => Promise<string> | Promise<Buffer> | Promise<any>;
 export function parse(message: IncomingMessage): Promise<string>;
@@ -79,8 +66,8 @@ export function parse<T>(
   });
 
   if (resolveType === 'buffer') return buffer;
-  else if (resolveType === 'json') return <Promise<T>>buffer.then(buffer => <T>JSON.parse(buffer.toString('utf8')));
-  else return <Promise<string>>buffer.then(buffer => buffer.toString(resolveType));
+  else if (resolveType === 'json') return <Promise<T>>buffer.then((buffer) => <T>JSON.parse(buffer.toString('utf8')));
+  else return <Promise<string>>buffer.then((buffer) => buffer.toString(resolveType));
 }
 
 export default request;

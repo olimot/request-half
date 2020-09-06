@@ -1,6 +1,6 @@
 {
   "name": "request-half",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "author": "Seungmin Kim",
   "repository": "http://github.com/olimot/request-half",
   "description": "functional-friendly, fetch-like nodejs native request",
@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "prepublish": "tsc",
+    "prepare": "tsc",
     "test": "mocha 'src/**/*.spec.ts'",
     "cover": "nyc yarn test"
   },

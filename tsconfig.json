@@ -13,5 +13,6 @@
     "isolatedModules": false,
     "noEmit": false,
     "allowJs": false
-  }
+  },
+  "exclude": ["lib/**/*.ts", "**/*.spec.ts"]
 }

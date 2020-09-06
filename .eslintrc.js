@@ -14,8 +14,9 @@ module.exports = {
   ],
   ignorePatterns: ['lib'],
   rules: {
-    'no-undef': 2,
-    '@typescript-eslint/explicit-function-return-type': { allowExpressions: true },
+    'no-undef': 'error',
+    '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
+    
   },
   overrides: [{ files: ['src/**/*.spec.ts'], env: { mocha: true } }],
 };
