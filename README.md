@@ -50,11 +50,15 @@ const { request, parse } = require('request-half');
 
 const url = 'some url here';
 
-// parse as json from utf-8 text
+// basic GET request
 const response = await request(url);
 
 // return value of request() would be http.IncomingMessage
 console.log(response.statusCode, response.headers);
+
+// send POST request only with the first argument as `options`
+const options = { hostname: '127.0.0.1', port, path: '/', method: 'POST', body: '{ "test": "ok" }' };
+const response2 = await request(options);
 
 // pass to parse() function
 const object2 = await parse('json', response);

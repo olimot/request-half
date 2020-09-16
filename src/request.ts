@@ -16,13 +16,12 @@ export function request(url: RequestOptions | string | URL, options?: RequestOpt
     const requestfn = isHttps ? https.request : http.request;
     const request = options ? requestfn(<string | URL>url, options, resolve) : requestfn(url, resolve);
     request.on('error', reject);
-    if (options && options.body) {
-      if (typeof options.body === 'string' || options.body instanceof Buffer) {
-        request.write(options.body, () => request.end());
-        request.end();
-      } else {
-        options.body.pipe(request);
-      }
+    const body = options ? options.body : (url as RequestOptions).body;
+    if (typeof body === 'string' || body instanceof Buffer) {
+      request.write(body, () => request.end());
+      request.end();
+    } else if (body?.pipe) {
+      body.pipe(request);
     } else {
       request.end();
     }
@@ -31,19 +30,20 @@ export function request(url: RequestOptions | string | URL, options?: RequestOpt
 
 export type ResolveType = Parameters<Buffer['toString']>[0] | 'buffer' | 'json';
 
-type ParseMessageCurried = (message: IncomingMessage) => Promise<string> | Promise<Buffer> | Promise<any>;
+type ParseMessageCurried<T> = (message: IncomingMessage) => Promise<string> | Promise<Buffer> | Promise<T | undefined>;
+
 export function parse(message: IncomingMessage): Promise<string>;
 export function parse(): (message: IncomingMessage) => Promise<string>;
-export function parse<T>(type: 'json'): (message: IncomingMessage) => Promise<T>;
+export function parse<T>(type: 'json'): (message: IncomingMessage) => Promise<T | undefined>;
 export function parse(type: 'buffer'): (message: IncomingMessage) => Promise<Buffer>;
 export function parse(type: ResolveType): (message: IncomingMessage) => Promise<string>;
-export function parse<T>(type: 'json', message: IncomingMessage): Promise<T>;
+export function parse<T>(type: 'json', message: IncomingMessage): Promise<T | undefined>;
 export function parse(type: 'buffer', message: IncomingMessage): Promise<Buffer>;
 export function parse(type: ResolveType, message: IncomingMessage): Promise<string>;
 export function parse<T>(
   type?: IncomingMessage | ResolveType,
   message?: IncomingMessage,
-): ParseMessageCurried | Promise<string> | Promise<Buffer> | Promise<T> {
+): ParseMessageCurried<T> | Promise<string> | Promise<Buffer> | Promise<T | undefined> {
   const resolveType = typeof type !== 'string' ? 'utf8' : type;
   const incomingMessage = typeof type !== 'string' ? type : message;
   if (!incomingMessage) return (message: IncomingMessage) => parse(resolveType, message);
@@ -60,13 +60,21 @@ export function parse<T>(
       response.pipe(gzipStream);
       response = gzipStream;
     }
-    const list: any[] = [];
-    response.on('data', (chunk: any) => list.push(chunk));
+    const list: Uint8Array[] = [];
+    response.on('data', (chunk: Uint8Array) => list.push(chunk));
     response.on('end', () => resolve(Buffer.concat(list)));
   });
 
   if (resolveType === 'buffer') return buffer;
-  else if (resolveType === 'json') return <Promise<T>>buffer.then((buffer) => <T>JSON.parse(buffer.toString('utf8')));
+  else if (resolveType === 'json') return <Promise<T | undefined>>buffer.then((buffer) => {
+      try {
+        const jsonContent = buffer.toString('utf8');
+        if (!jsonContent) return undefined;
+        return <T>JSON.parse(jsonContent);
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    });
   else return <Promise<string>>buffer.then((buffer) => buffer.toString(resolveType));
 }
 

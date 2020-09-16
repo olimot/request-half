@@ -6,17 +6,11 @@ module.exports = {
     es2017: true,
     node: true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier/@typescript-eslint'],
   ignorePatterns: ['lib'],
   rules: {
     'no-undef': 'error',
     '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
-    
   },
   overrides: [{ files: ['src/**/*.spec.ts'], env: { mocha: true } }],
 };
