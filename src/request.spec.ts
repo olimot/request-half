@@ -4,6 +4,8 @@ import http from 'http';
 import { AddressInfo } from 'net';
 import zlib from 'zlib';
 import { Readable } from 'stream';
+import { RequestOptions } from 'https';
+import querystring from 'querystring';
 
 type TestType = { test: string };
 
@@ -34,6 +36,29 @@ describe('request', function () {
   });
 
   it('should handle first argument as `options`, then return object from json response', async function () {
+    const createJsonApiBro = (base: RequestOptions) => (
+      method: 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT',
+      endpoint: string,
+      body?: unknown,
+    ): RequestOptions => ({
+      ...base,
+      path: `${base.path}${endpoint}${
+        typeof body !== 'undefined' && ['HEAD', 'OPTIONS', 'DELETE', 'GET'].indexOf(method) >= 0
+          ? `?${querystring.stringify(body as querystring.ParsedUrlQueryInput)}`
+          : ''
+      }`,
+      method,
+      ...(typeof body !== 'undefined' &&
+        ['POST', 'PUT', 'PATCH'].indexOf(method) >= 0 && {
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify(body),
+        }),
+    });
+
+    const myApiV2 = createJsonApiBro({ protocol: 'http:', hostname: '127.0.0.1', path: '/api/v2/' });
+    console.log(myApiV2('GET', 'post', { id: 1 }));
+    // request(myApiV2('GET', 'post', { id: 1 }));
+
     const options = { hostname: '127.0.0.1', port, path: '/', method: 'POST', body: '{ "test": "ok" }' };
     const object = await request(options).then(parse<TestType>('json'));
     assert(object !== null && typeof object === 'object' && object.test === 'ok');

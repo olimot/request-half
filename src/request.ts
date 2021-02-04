@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import http, { IncomingMessage } from 'http';
 import https from 'https';
 import stream from 'stream';
 import zlib from 'zlib';
 
-type RequestOptions = http.RequestOptions & { body?: string | Buffer | stream.Readable };
+export type RequestOptions = http.RequestOptions & { body?: string | Buffer | stream.Readable };
 
 export function request(url: string | URL, options?: RequestOptions): Promise<IncomingMessage>;
 export function request(options: RequestOptions): Promise<IncomingMessage>;
@@ -34,13 +35,13 @@ type ParseMessageCurried<T> = (message: IncomingMessage) => Promise<string> | Pr
 
 export function parse(message: IncomingMessage): Promise<string>;
 export function parse(): (message: IncomingMessage) => Promise<string>;
-export function parse<T>(type: 'json'): (message: IncomingMessage) => Promise<T | undefined>;
+export function parse<T = any>(type: 'json'): (message: IncomingMessage) => Promise<T | undefined>;
 export function parse(type: 'buffer'): (message: IncomingMessage) => Promise<Buffer>;
 export function parse(type: ResolveType): (message: IncomingMessage) => Promise<string>;
-export function parse<T>(type: 'json', message: IncomingMessage): Promise<T | undefined>;
+export function parse<T = any>(type: 'json', message: IncomingMessage): Promise<T | undefined>;
 export function parse(type: 'buffer', message: IncomingMessage): Promise<Buffer>;
 export function parse(type: ResolveType, message: IncomingMessage): Promise<string>;
-export function parse<T>(
+export function parse<T = any>(
   type?: IncomingMessage | ResolveType,
   message?: IncomingMessage,
 ): ParseMessageCurried<T> | Promise<string> | Promise<Buffer> | Promise<T | undefined> {
