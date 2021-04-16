@@ -1,6 +1,6 @@
 # request-half
 
-### _asynchronous, functional-friendly, node-native `request()`, `parse()`_
+### _asynchronous, functional-friendly `request()`, `parse()` only using node-native modules_
 
 - **It is a node module. Browser environment is not supported.**
 - It uses node internal modules: `http`, `https`, `stream`, `zlib`
